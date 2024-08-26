@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
-
+import 'react-toastify/dist/ReactToastify.css';
 function CourseList() {
   const [courses, setCourses] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -60,14 +60,14 @@ function CourseList() {
               <td>{course.title}</td>
               <td>{course.courseCode}</td>
               <td>
-                <Button 
-                  onClick={() => handleShow(course)} 
+                <Button
+                  onClick={() => handleShow(course)}
                   className="mx-2 btn btn-dark btn-sm me-2"
                 >
                   <i className="fa-solid fa-magnifying-glass"></i>
                 </Button>
-                <Button 
-                  onClick={() => deleteCourse(course.id)} 
+                <Button
+                  onClick={() => deleteCourse(course.id)}
                   className="mx-2 btn btn-dark btn-sm"
                 >
                   <i className="fas fa-trash-alt"></i>
