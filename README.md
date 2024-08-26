@@ -9,6 +9,12 @@ Frontend for course management application - React, Bootstrap
 4. ```npm start```
 
 
+## Docker
+1. ```docker pull r0ckyr/course-management-frontend```
+2. ```docker run -p 3000:80 r0ckyr/course-management-frontend```
+
+This will start the application on port 3000
+
 ## Pages
 
 1. Create
