@@ -17,13 +17,14 @@ function InstanceList() {
       .catch(error => console.error('Error fetching instances:', error));
   }, [year, semester]);
 
-  const deleteInstance = (id) => {
-    axios.delete(`http://localhost:8080/api/instances/${year}/${semester}/${id}`)
+  const deleteInstance = (id,courseId) => {
+    axios.delete(`http://localhost:8080/api/instances/${year}/${semester}/${courseId}`)
       .then(() => setInstances(instances.filter(instance => instance.id !== id)))
       .catch(error => console.error('Error deleting instance:', error));
   };
 
   const handleShow = (instance) => {
+    console.log(instance);
     setSelectedInstance(instance);
     setShowModal(true);
   };
@@ -70,7 +71,7 @@ function InstanceList() {
                   <i className="fa-solid fa-magnifying-glass"></i>
                 </Button>
                 <Button 
-                  onClick={() => deleteInstance(instance.id)} 
+                  onClick={() => deleteInstance(instance.id, instance.course.id)} 
                   className="mx-2 btn btn-dark btn-sm"
                 >
                   <i className="fas fa-trash-alt"></i>
