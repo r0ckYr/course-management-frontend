@@ -1,6 +1,6 @@
 # Step 1: Build the React app
 # Use an official Node.js runtime as a parent image
-FROM node:18 AS build
+FROM node:20 AS build
 
 # Set the working directory in the container
 WORKDIR /app
