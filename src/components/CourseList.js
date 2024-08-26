@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table } from 'react-bootstrap';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function CourseList() {
   const [courses, setCourses] = useState([]);
@@ -15,8 +17,23 @@ function CourseList() {
 
   const deleteCourse = (id) => {
     axios.delete(`http://localhost:8080/api/courses/${id}`)
-      .then(() => setCourses(courses.filter(course => course.id !== id)))
-      .catch(error => console.error('Error deleting course:', error));
+      .then(() => {
+        setCourses(courses.filter(course => course.id !== id));
+      })
+      .catch(error => {
+        let errorMessage = 'An unexpected error occurred while deleting the course.';
+        if (error.response && error.response.status === 500) {
+          errorMessage = error.response.data.error || errorMessage;
+        }
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
   };
 
   const handleShow = (course) => {
@@ -29,6 +46,7 @@ function CourseList() {
   return (
     <div className="container mt-5">
       <h2 className="mb-4">Course List</h2>
+
       <table className="table table-hover table-bordered table-striped">
         <thead className="table-primary text-light">
           <tr>
@@ -53,7 +71,7 @@ function CourseList() {
                   onClick={() => deleteCourse(course.id)} 
                   className="mx-2 btn btn-dark btn-sm"
                 >
-                  <i className="fas fa-trash-alt "></i>
+                  <i className="fas fa-trash-alt"></i>
                 </Button>
               </td>
             </tr>
@@ -94,6 +112,9 @@ function CourseList() {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Toast Container for Notifications */}
+      <ToastContainer />
     </div>
   );
 }
