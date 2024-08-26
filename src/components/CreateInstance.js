@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast
 
 function CreateInstance() {
   const [year, setYear] = useState('');
@@ -8,7 +10,6 @@ function CreateInstance() {
   const [courseId, setCourseId] = useState('');
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchCourses();
@@ -16,32 +17,44 @@ function CreateInstance() {
 
   const fetchCourses = async () => {
     setLoading(true);
-    setError('');
     try {
       const response = await axios.get('http://localhost:8080/api/courses');
       setCourses(response.data);
     } catch (error) {
-      setError('Error fetching courses.');
+      toast.error('Error fetching courses.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/instances', { year, semester, course: { id: courseId } })
-      .then(() => {
+    try {
+        await axios.post('http://localhost:8080/api/instances', { year, semester, course: { id: courseId } });
         setYear('');
         setSemester('');
         setCourseId('');
-      })
-      .catch(error => console.error('Error creating instance:', error));
-  };
+        toast.success('Course instance created successfully.');
+    } catch (error) {
+        if (error.response) {
+            // Check if the response has a status code of 500
+            if (error.response.status === 500) {
+                // Extract error message from the response body
+                const errorMessage = error.response.data.error || 'Internal server error. Please try again later.';
+                toast.error(errorMessage);
+            } else {
+                toast.error('Error creating course instance.');
+            }
+        } else {
+            toast.error('Error creating course instance.');
+        }
+    }
+};
+
 
   return (
     <div className="container mt-5 mb-5">
       <h2 className="mb-4">Create Course Instance</h2>
-      {error && <div className="alert alert-danger" role="alert">{error}</div>}
       {loading ? (
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>
@@ -86,6 +99,7 @@ function CreateInstance() {
           <button onClick={fetchCourses} className="btn btn-primary ms-4">Refresh</button>
         </form>
       )}
+      <ToastContainer /> {/* Add ToastContainer to your component */}
     </div>
   );
 }

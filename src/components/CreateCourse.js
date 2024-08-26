@@ -1,20 +1,37 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify'; // Import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS for toast
 
 function CreateCourse() {
   const [title, setTitle] = useState('');
   const [courseCode, setCourseCode] = useState('');
   const [description, setDescription] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:8080/api/courses', { title, courseCode, description })
-      .then(() => {
-        setTitle('');
-        setCourseCode('');
-        setDescription('');
-      })
-      .catch(error => console.error('Error creating course:', error));
+    try {
+      await axios.post('http://localhost:8080/api/courses', { title, courseCode, description });
+      // Clear form fields on success
+      setTitle('');
+      setCourseCode('');
+      setDescription('');
+      // Show success toast
+      toast.success('Course created successfully.');
+    } catch (error) {
+      if (error.response) {
+        // Check if the response has a status code of 500
+        if (error.response.status === 500) {
+          // Extract error message from the response body
+          const errorMessage = error.response.data.error || 'Internal server error. Please try again later.';
+          toast.error(errorMessage);
+        } else {
+          toast.error('Error creating course.');
+        }
+      } else {
+        toast.error('Error creating course.');
+      }
+    }
   };
 
   return (
@@ -53,6 +70,7 @@ function CreateCourse() {
         </div>
         <button type="submit" className="btn btn-primary">Create Course</button>
       </form>
+      <ToastContainer /> {/* Add ToastContainer to your component */}
     </div>
   );
 }
