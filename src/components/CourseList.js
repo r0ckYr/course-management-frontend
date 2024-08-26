@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Table } from 'react-bootstrap';
 import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 function CourseList() {
   const [courses, setCourses] = useState([]);
